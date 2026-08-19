@@ -4,7 +4,7 @@ import PlainTextViewNativeComponent from './PlainTextViewNativeComponent';
 
 // RN's TextStyle plus the one text style it has no entry for.
 // `fontVariationSettings` is a style rather than a prop because two upstream
-// attempts to add it (facebook/react-native#44685, #44667) never merged, so
+// attempts to add it (react/react-native#44685, #44667) never merged, so
 // the type is widened here instead. Widened, not replaced, so a plain
 // TextStyle stays assignable and this can be dropped if RN adds the key.
 export type PlainTextStyle = TextStyle & { fontVariationSettings?: string };

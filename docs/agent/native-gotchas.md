@@ -151,7 +151,7 @@ Learned the hard way. Most of these cost an afternoon the first time.
 
 - **`fontVariationSettings` has no RN `<Text>` counterpart to match, and the
   platform APIs for it are asymmetric.** Two upstream PRs implemented it and both
-  went stale unmerged: facebook/react-native#44685 (iOS) and #44667 (Android),
+  went stale unmerged: react/react-native#44685 (iOS) and #44667 (Android),
   the latter with unresolved `TextInput`/`CustomStyleSpan` review comments. So
   there is no overlay to compare against. Nothing about their fate says the
   platforms can't do it. Neither stalled on a platform gap.

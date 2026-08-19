@@ -496,7 +496,7 @@ export default function FeaturesScreen({ navigation }: Props) {
             fontVariationSettings on either platform, so the scarlet overlay sits at
             the font's default instance on every row while the grey box moves.
             Two PRs tried to add it to core and both went stale unmerged
-            (facebook/react-native#44685 for iOS, #44667 for Android). See
+            (react/react-native#44685 for iOS, #44667 for Android). See
             docs/agent/native-gotchas.md.
           - Every row needs a font whose file carries an fvar table, which no
             system font usably does: SF keeps its axes private, and Roboto is
@@ -834,8 +834,7 @@ const TEXT_TRANSFORM_ORDINAL_SPECIMEN = '3rd place winner';
 // Apostrophes stay inside the word rather than starting a new one.
 const TEXT_TRANSFORM_CONTRACTION_SPECIMEN = "it's a trap, don't panic";
 
-const TEXT_TRANSFORM_FOOTER =
-  "RN <Text>'s capitalize has a bug on iOS (facebook/react-native#34117).";
+const TEXT_TRANSFORM_FOOTER = "RN <Text>'s capitalize has a bug on iOS (react/react-native#34117).";
 
 // The section needs a font that actually carries the features, and SF does not:
 // it forms no ff/ffi/ffl ligatures and ships no oldstyle figures, so those rows

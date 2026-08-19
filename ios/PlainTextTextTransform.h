@@ -16,7 +16,7 @@ namespace facebook::react {
  * RCTNSStringFromStringApplyingTextTransform (RCTAttributedTextUtils.mm),
  * reimplemented here since it lives in a private RN target. Capitalize does
  * not: RN's iOS capitalize also lowercases the rest of each word, diverging
- * from CSS and from Android (facebook/react-native#34117). This matches CSS
+ * from CSS and from Android (react/react-native#34117). This matches CSS
  * and Android instead, uppercasing only each word's first character.
  */
 NSString *plainTextApplyTextTransform(NSString *text, RNPlainTextTextTransform textTransform);
