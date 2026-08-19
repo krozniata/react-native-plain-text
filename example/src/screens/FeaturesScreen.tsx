@@ -369,6 +369,33 @@ export default function FeaturesScreen({ navigation }: Props) {
           </TextItem>
         ))}
       </Section>
+      <Section title="Text Transform" footer={TEXT_TRANSFORM_FOOTER}>
+        {TEXT_TRANSFORMS.map((textTransform) => (
+          <TextItem
+            key={textTransform}
+            label={textTransform}
+            showText={showText}
+            style={{ fontSize: SHORT_ROW_SIZE, textTransform }}
+          >
+            {TEXT_TRANSFORM_SPECIMEN}
+          </TextItem>
+        ))}
+        {/* capitalize's two gotchas: a digit-led word and a contraction. */}
+        <TextItem
+          label="capitalize, digit-led word"
+          showText={showText}
+          style={{ fontSize: SHORT_ROW_SIZE, textTransform: 'capitalize' }}
+        >
+          {TEXT_TRANSFORM_ORDINAL_SPECIMEN}
+        </TextItem>
+        <TextItem
+          label="capitalize, contraction"
+          showText={showText}
+          style={{ fontSize: SHORT_ROW_SIZE, textTransform: 'capitalize' }}
+        >
+          {TEXT_TRANSFORM_CONTRACTION_SPECIMEN}
+        </TextItem>
+      </Section>
       {/* Font scaling follows the OS accessibility text-size setting (Dynamic
           Type on iOS, Font size on Android). FONT_SCALING_FOOTER names the path
           for whichever platform is running. */}
@@ -794,6 +821,21 @@ const TEXT_DECORATION_LINES = [
   'line-through',
   'underline line-through',
 ] as const;
+
+const TEXT_TRANSFORMS = ['none', 'lowercase', 'uppercase', 'capitalize'] as const;
+
+// Mid-word caps ("BROWN") make capitalize's row visibly diverge from the
+// scarlet <Text> overlay on iOS: see TEXT_TRANSFORM_FOOTER.
+const TEXT_TRANSFORM_SPECIMEN = 'Quick BROWN fox';
+
+// A digit has no uppercase form, so capitalize leaves it alone.
+const TEXT_TRANSFORM_ORDINAL_SPECIMEN = '3rd place winner';
+
+// Apostrophes stay inside the word rather than starting a new one.
+const TEXT_TRANSFORM_CONTRACTION_SPECIMEN = "it's a trap, don't panic";
+
+const TEXT_TRANSFORM_FOOTER =
+  "RN <Text>'s capitalize has a bug on iOS (facebook/react-native#34117).";
 
 // The section needs a font that actually carries the features, and SF does not:
 // it forms no ff/ffi/ffl ligatures and ships no oldstyle figures, so those rows

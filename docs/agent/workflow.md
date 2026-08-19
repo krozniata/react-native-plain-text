@@ -36,6 +36,12 @@ the CSS name it was never a second gap.
 `PlainText.native.tsx`'s `resolveTextAlignVertical` mirrors that alias, and
 closing `textAlignVertical` on iOS closed `verticalAlign` with it.
 
+### When RN itself is wrong
+
+Same reasoning when RN's own behavior is a known bug, not a platform gap:
+match CSS/web, not RN's bug. `textTransform: 'capitalize'` on iOS is this case
+(facebook/react-native#34117) — see `ios/PlainTextTextTransform.h`.
+
 ## Order of work
 
 1. **Add usage/test cases to the Features screen first.**
