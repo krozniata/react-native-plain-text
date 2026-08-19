@@ -83,6 +83,7 @@ export function PlainText({
     textTransform,
     lineHeight,
     letterSpacing,
+    includeFontPadding,
     ...viewStyle
   } = StyleSheet.flatten(style) ?? {};
 
@@ -107,6 +108,7 @@ export function PlainText({
       ellipsizeMode={ellipsizeMode}
       allowFontScaling={allowFontScaling}
       maxFontSizeMultiplier={maxFontSizeMultiplier}
+      includeFontPadding={includeFontPadding}
       lineHeightClippingIos={
         unstable_lineHeightClippingIos ?? getTextCompatConfig().lineHeightClippingIos
       }

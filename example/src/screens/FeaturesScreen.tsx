@@ -648,6 +648,25 @@ export default function FeaturesScreen({ navigation }: Props) {
           Invisible to screen readers on both platforms
         </TextItem>
       </Section>
+      {/* Paired with padding since that's where the effect is visible. */}
+      <Section title="Font Padding (Android-only)" footer={FONT_PADDING_FOOTER}>
+        <TextItem
+          label="default, padding 4"
+          showText={showText}
+          style={[styles.body, { padding: 4 }]}
+          containerStyle={screenStyles.wideRow}
+        >
+          {PARAGRAPH}
+        </TextItem>
+        <TextItem
+          label="includeFontPadding false, padding 4"
+          showText={showText}
+          style={[styles.body, { padding: 4, includeFontPadding: false }]}
+          containerStyle={screenStyles.wideRow}
+        >
+          {PARAGRAPH}
+        </TextItem>
+      </Section>
     </ScrollView>
   );
 }
@@ -1150,4 +1169,9 @@ const FONT_FAMILY_RESOLUTION: FontFamilyRow[] = [
 const FONT_FAMILY_RESOLUTION_FOOTER = Platform.select({
   ios: 'Compare Text should agree on every row. Inter_* are expo-font aliases, one per cut.',
   default: 'The built-in rows are Android analogs. Inter_* are expo-font aliases, one per cut.',
+});
+
+const FONT_PADDING_FOOTER = Platform.select({
+  ios: 'Both rows should look identical here.',
+  default: 'The second row should sit noticeably tighter against the padding edge than the first.',
 });

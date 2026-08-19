@@ -90,6 +90,7 @@ Via `style={{ ... }}`:
 - `textDecorationLine`: `'none' | 'underline' | 'line-through' | 'underline line-through'`
 - `verticalAlign`: Android only, like RN `<Text>`
 - `textAlignVertical`: Android only, like RN `<Text>`
+- `includeFontPadding`: Android only, like RN `<Text>`
 - Every other `ViewStyle` prop (`width`, `margin`, `padding`,
   `backgroundColor`, `opacity`, …), forwarded to the native view as-is
 
@@ -110,7 +111,6 @@ Via `style={{ ... }}`:
 
 - `textDecorationColor` / `textDecorationStyle`
 - `textShadowColor` / `textShadowOffset` / `textShadowRadius`
-- `includeFontPadding` (Android)
 - `adjustsFontSizeToFit` / `minimumFontScale`: the most expensive item on the
   list, and the only one that is more than a prop. Shrinking text to fit needs
   the view's final frame, which the measurement pass (the thing that decides

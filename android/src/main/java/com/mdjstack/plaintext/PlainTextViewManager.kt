@@ -160,6 +160,12 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     view?.setMaxFontSizeMultiplier(maxFontSizeMultiplier)
   }
 
+  // Android-only, matching RN <Text>.
+  @ReactProp(name = "includeFontPadding", defaultBoolean = true)
+  override fun setIncludeFontPadding(view: PlainTextView?, includeFontPadding: Boolean) {
+    view?.includeFontPadding = includeFontPadding
+  }
+
   // No-op: nothing on Android currently reads `experiment` (measureView()
   // always shares the off-screen view below, since the alternative it once gated
   // measured slower). Declared for a future perf-suite A/B test, like iOS.
@@ -174,12 +180,21 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
   override fun setLineHeightClippingIos(view: PlainTextView?, lineHeightClippingIos: Boolean) {
   }
 
+  private fun ReadableMap?.getBooleanOr(name: String, default: Boolean): Boolean =
+    if (this?.hasKey(name) == true) getBoolean(name) else default
+
+  private fun ReadableMap?.getIntOr(name: String, default: Int): Int =
+    if (this?.hasKey(name) == true) getInt(name) else default
+
+  private fun ReadableMap?.getFloatOr(name: String, default: Float): Float =
+    if (this?.hasKey(name) == true) getDouble(name).toFloat() else default
+
   // Called from C++ (PlainTextMeasurementsManager, via FabricUIManager.measure) on the
   // Fabric layout thread. This is where text is actually measured, since Fabric never
   // runs Android's normal onMeasure for our view. `props` carries the size-affecting
   // props serialized by the C++ side.
   //
-  // SYNC: two invariants, neither checked by anything: every fallback below must match
+  // SYNC: two invariants, neither checked by anything: every fallback above must match
   // the default in the generated Props.h (the C++ side omits props at default), and
   // every prop must be set on every call, not only when its key is present (the
   // off-screen view is reused across nodes).
@@ -195,14 +210,9 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     attachmentsPositions: FloatArray?
   ): Long {
     val view = measureView(context)
-    view.setAllowFontScaling(
-      if (props?.hasKey("allowFontScaling") == true) props.getBoolean("allowFontScaling") else true
-    )
-    view.setMaxFontSizeMultiplier(
-      if (props?.hasKey("maxFontSizeMultiplier") == true) props.getDouble("maxFontSizeMultiplier").toFloat() else 0f
-    )
-    val fontSize = if (props?.hasKey("fontSize") == true) props.getDouble("fontSize") else 14.0
-    view.setFontSizeSp(fontSize.toFloat())
+    view.setAllowFontScaling(props.getBooleanOr("allowFontScaling", true))
+    view.setMaxFontSizeMultiplier(props.getFloatOr("maxFontSizeMultiplier", 0f))
+    view.setFontSizeSp(props.getFloatOr("fontSize", 14f))
     // props serializes an unset fontFamily as "" (the C++ std::string default),
     // not null. Normalize so this matches the setFontFamily prop setter path.
     view.setFontFamily(props?.getString("fontFamily")?.ifEmpty { null })
@@ -214,14 +224,16 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     view.setVariationSettings(props?.getString("fontVariationSettings")?.ifEmpty { null })
     // letterSpacing widens the text and lineHeight grows each line, so both must be
     // applied for the measured size to match.
-    view.setLetterSpacingDip(if (props?.hasKey("letterSpacing") == true) props.getDouble("letterSpacing").toFloat() else 0f)
-    view.setLineHeight(if (props?.hasKey("lineHeight") == true) props.getDouble("lineHeight").toFloat() else 0f)
+    view.setLetterSpacingDip(props.getFloatOr("letterSpacing", 0f))
+    view.setLineHeight(props.getFloatOr("lineHeight", 0f))
     // Transforms the measured string itself (case changes can change width), so it
     // must be applied before setPlainText below.
     view.setTextTransform(props?.getString("textTransform"))
     // numberOfLines caps the measured height. ellipsizeMode only changes where the
     // ellipsis lands, so it isn't serialized for measure.
-    view.setNumberOfLines(if (props?.hasKey("numberOfLines") == true) props.getInt("numberOfLines") else 0)
+    view.setNumberOfLines(props.getIntOr("numberOfLines", 0))
+    // Adds extra ascent/descent padding per line, so it affects the measured height.
+    view.includeFontPadding = props.getBooleanOr("includeFontPadding", true)
     view.setPlainText(props?.getString("text") ?: "")
     // Applies the state the setters above marked dirty, in dependency order, so their
     // call order here doesn't matter.

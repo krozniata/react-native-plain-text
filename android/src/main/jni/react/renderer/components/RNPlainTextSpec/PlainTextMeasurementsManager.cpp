@@ -73,6 +73,9 @@ folly::dynamic serializeProps(const RNPlainTextProps &props) {
   if (props.experiment) {
     serializedProps["experiment"] = true;
   }
+  if (!props.includeFontPadding) {
+    serializedProps["includeFontPadding"] = false;
+  }
   return serializedProps;
 }
 

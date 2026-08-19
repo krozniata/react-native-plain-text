@@ -80,6 +80,9 @@ export interface NativeProps extends ViewProps {
   // applyContentFromProps's lineHeight vertical shift to RN <Text>'s current
   // ascent-clipping bug instead of PlainText's fix. No-op on Android.
   lineHeightClippingIos?: CodegenTypes.WithDefault<boolean, false>;
+  // Android-only, matching RN <Text>: UILabel has no equivalent extra
+  // line-height padding to turn off, so this stays a real platform gap.
+  includeFontPadding?: CodegenTypes.WithDefault<boolean, true>;
 }
 
 export default codegenNativeComponent<NativeProps>('RNPlainText');
