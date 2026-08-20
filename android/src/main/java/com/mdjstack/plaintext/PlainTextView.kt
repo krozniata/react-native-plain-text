@@ -15,6 +15,7 @@ import android.util.AttributeSet
 import android.util.LruCache
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import com.facebook.common.logging.FLog
 import com.facebook.react.bridge.ReadableArray
@@ -174,6 +175,16 @@ class PlainTextView : AppCompatTextView {
   }
 
   init {
+    // A measured but never-parented view reaches checkForRelayout() from setText(), which
+    // dereferences layoutParams.width. Seeded here, not in applyText, since setText is only
+    // one of checkForRelayout's three callers. WRAP_CONTENT is what the parent would have
+    // generated anyway. RN's ReactTextView passes (0, 0), which for a view with a frame
+    // takes checkForRelayout's inline branch rather than nullLayouts() + requestLayout(),
+    // so this one pays an extra layout build through the measureAndLayout post below.
+    layoutParams = ViewGroup.LayoutParams(
+      ViewGroup.LayoutParams.WRAP_CONTENT,
+      ViewGroup.LayoutParams.WRAP_CONTENT
+    )
     setTextColor(Color.BLACK) // Matches iOS's UILabel; the theme's TextView gray would differ.
     // Fabric skips setters for props at default, so seed textSize/letterSpacing here or
     // the view keeps the theme's values, mismatching what the shadow node measured.

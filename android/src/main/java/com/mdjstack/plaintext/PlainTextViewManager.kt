@@ -2,7 +2,6 @@ package com.mdjstack.plaintext
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
@@ -35,12 +34,13 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     return NAME
   }
 
-  // SYNC: does not reset a recycled view. Fabric's recycle pool
-  // (enableViewRecyclingForText/ForView, on by default) can hand this a previously-used
-  // PlainTextView with stale text/font/color instead of calling createViewInstance.
-  // RN's own ReactTextViewManager guards this with recycleView(). See
+  // SYNC: does not reset a reused view, so recycling stays off. Android pools views per
+  // view manager, only for one that calls ViewManager.setupViewRecycling(), which this one
+  // never does, so every mount lands here. Calling it would hand this a previously-used
+  // PlainTextView carrying stale text/font/color, which is what RN's own
+  // ReactTextViewManager answers with recycleView(). See
   // docs/agent/sync-points.md#recycled-view-state, the same failure as the iOS fix in
-  // RNPlainText.mm, not yet ported here.
+  // RNPlainText.mm, not ported here.
   public override fun createViewInstance(context: ThemedReactContext): PlainTextView {
     return PlainTextView(context)
   }
@@ -269,22 +269,9 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
 
     // EXPENSIVE: constructing an AppCompatTextView (theme attribute resolution, tint/emoji
     // helpers), only reached on a cache miss (Context change or GC of the weak reference).
-    val view = newMeasureView(context)
-    measureViews.set(WeakReference(view))
-    return view
-  }
-
-  private fun newMeasureView(context: Context): PlainTextView {
     val view = PlainTextView(context)
     view.isMeasureOnly = true
-    // From the second measurement on, setText() reaches checkForRelayout(), which
-    // dereferences LayoutParams and crashes when they're null. RN works around the
-    // same crash in ReactTextView (EMPTY_LAYOUT_PARAMS). Never attached, so the
-    // values don't matter.
-    view.layoutParams = ViewGroup.LayoutParams(
-      ViewGroup.LayoutParams.WRAP_CONTENT,
-      ViewGroup.LayoutParams.WRAP_CONTENT
-    )
+    measureViews.set(WeakReference(view))
     return view
   }
 
