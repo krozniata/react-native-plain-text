@@ -369,6 +369,18 @@ export default function FeaturesScreen({ navigation }: Props) {
           </TextItem>
         ))}
       </Section>
+      <Section title="Text Shadow">
+        {TEXT_SHADOWS.map(({ label, style }) => (
+          <TextItem
+            key={label}
+            label={label}
+            showText={showText}
+            style={{ fontSize: SHORT_ROW_SIZE, ...style }}
+          >
+            {SPECIMEN}
+          </TextItem>
+        ))}
+      </Section>
       <Section title="Text Transform" footer={TEXT_TRANSFORM_FOOTER}>
         {TEXT_TRANSFORMS.map((textTransform) => (
           <TextItem
@@ -840,6 +852,31 @@ const TEXT_DECORATION_LINES = [
   'line-through',
   'underline line-through',
 ] as const;
+
+// "offset only" shows iOS drawing with no radius set, since its gate is
+// textShadowOffset alone. "radius only" is the asymmetric case: no shadow on
+// iOS, but Android still draws (see hasTextShadow in
+// PlainTextViewNativeComponent.ts).
+//
+// textShadowColor is excluded from compareText/overlayText (Specimen.tsx): a
+// shadow sits behind the glyphs, so flattening it there would fight the
+// overlay's multiply blend. "colored" keeps its own indigo instead.
+const TEXT_SHADOWS: { label: string; style: TextStyle }[] = [
+  { label: 'offset only', style: { textShadowOffset: { width: 2, height: 2 } } },
+  {
+    label: 'blurred',
+    style: { textShadowOffset: { width: 1, height: 1 }, textShadowRadius: 4 },
+  },
+  {
+    label: 'colored',
+    style: {
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 2,
+      textShadowColor: COLOR.indigo,
+    },
+  },
+  { label: 'radius only (no iOS shadow)', style: { textShadowRadius: 4 } },
+];
 
 const TEXT_TRANSFORMS = ['none', 'lowercase', 'uppercase', 'capitalize'] as const;
 
