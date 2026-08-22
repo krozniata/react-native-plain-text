@@ -472,6 +472,10 @@ const styles = StyleSheet.create({
     // scarlet here, cobalt in `compareText`, multiplying to the same dark
     // neutral edge as the glyphs wherever the two boxes' borders coincide.
     borderColor: COLOR.scarlet,
+    // Same override for a Text Decoration Color & Style row's own underline/
+    // strikethrough color, so the line joins the comparison instead of
+    // staying the row's fixed demo color underneath it.
+    textDecorationColor: COLOR.scarlet,
   },
   // Applied to PlainText only while the overlay is showing (see the PlainText
   // style in TextItem). Left at full opacity, deliberately: `overlay`'s
@@ -487,5 +491,6 @@ const styles = StyleSheet.create({
     color: COLOR.cobalt,
     backgroundColor: COLOR.wash,
     borderColor: COLOR.cobalt,
+    textDecorationColor: COLOR.cobalt,
   },
 });
