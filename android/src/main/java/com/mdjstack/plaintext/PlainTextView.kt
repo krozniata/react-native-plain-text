@@ -79,6 +79,15 @@ class PlainTextView : AppCompatTextView {
   // the typeface it was applied to).
   private var appliedVariationSettings: String? = null
 
+  // The isSubpixelText/isLinearText value applyTypeface last set on `paint`. Tracked
+  // separately from appliedBaseTypeface: toggling this value alone (no font prop
+  // change) leaves the resolved typeface identical, so the setTypeface side effect
+  // below that would otherwise force TextView to rebuild/redraw never fires. Without
+  // this, the paint flags flip in memory but the mounted view keeps drawing its
+  // stale, already-built Layout, invisible unless something else (a width change, a
+  // remount) happens to force a redraw too.
+  private var appliedHasCustomStyleSpan: Boolean = false
+
   // Never the live typeface: applyStyles derives from whatever is passed when
   // fontFamily is null, so chaining would leak a should-be-cleared font between nodes
   // through the reused measuring view.
@@ -446,6 +455,24 @@ class PlainTextView : AppCompatTextView {
   }
 
   private fun applyTypeface() {
+    // Mirrors RN's CustomStyleSpan condition (TextLayoutManager.kt): any of the
+    // three set at all attaches it, regardless of value. Its apply() turns both
+    // flags on; a plain paint never does. Closes a sub-px width/glyph-position
+    // drift against RN's <Text>, only visible once one of these is customized.
+    // See docs/agent/perf-experiments.md.
+    val hasCustomStyleSpan =
+      fontStyle != ReactConstants.UNSET || fontWeight != ReactConstants.UNSET || fontFamily != null
+    paint.isSubpixelText = hasCustomStyleSpan
+    paint.isLinearText = hasCustomStyleSpan
+    if (hasCustomStyleSpan != appliedHasCustomStyleSpan) {
+      appliedHasCustomStyleSpan = hasCustomStyleSpan
+      // EXPENSIVE: forces a re-layout (docs/agent/performance.md). Paint flags
+      // don't self-invalidate; usually setTypeface below does it for us, but not
+      // when the resolved typeface doesn't change (e.g. fontStyle="normal").
+      requestLayout()
+      invalidate()
+    }
+
     // Not expensive despite appearances: every applyStyles path is interned, via
     // ReactFontManager's or Typeface's own caches.
     val resolved = ReactTypefaceUtils.applyStyles(

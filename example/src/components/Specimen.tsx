@@ -147,10 +147,6 @@ export function TextItem({
           </PlainText>
         </View>
         {showText && (
-          // `alignItems: flex-start` leaves the Text a normal flex child, so it
-          // shrink-wraps to its own measured width but still wraps at the same
-          // available width PlainText was measured against, which is what makes
-          // the scarlet box edge comparable to the grey one.
           <View style={styles.overlay}>
             <Text
               // Cast back to what RN accepts. A fontVariationSettings in there is

@@ -1,7 +1,9 @@
 package com.mdjstack.plaintext
 
 import android.content.Context
+import android.text.Layout
 import android.view.View
+import kotlin.math.ceil
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
@@ -161,7 +163,8 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     view?.setLetterSpacingDip(letterSpacing)
   }
 
-  // iOS-only concern (see PlainTextViewNativeComponent.ts). No-op here, same as `experiment`.
+  // iOS-only concern (see PlainTextViewNativeComponent.ts). No-op here, same as
+  // `lineHeightClippingIos` below.
   @ReactProp(name = "hasLetterSpacing", defaultBoolean = false)
   override fun setHasLetterSpacing(view: PlainTextView?, hasLetterSpacing: Boolean) {
   }
@@ -192,9 +195,7 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     view?.includeFontPadding = includeFontPadding
   }
 
-  // No-op: nothing on Android currently reads `experiment` (measureView()
-  // always shares the off-screen view below, since the alternative it once gated
-  // measured slower). Declared for a future perf-suite A/B test, like iOS.
+  // Unread: no experiment is currently using it. See docs/agent/perf-experiments.md.
   @ReactProp(name = "experiment", defaultBoolean = false)
   override fun setExperiment(view: PlainTextView?, experiment: Boolean) {
   }
@@ -281,8 +282,30 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
       return YogaMeasureOutput.make(0f, PixelUtil.toDIPFromPixel(view.baseline.toFloat()))
     }
 
+    // Intrinsic width straight from Layout.getDesiredWidth, RN's own
+    // TextLayoutManager.createLayout entry point, instead of TextView.onMeasure's
+    // private getDesiredWidth() (compound drawables, mMaxWidth/mMinWidth, gravity,
+    // autosize). The two agree for most strings but drift apart by typeface, only
+    // visible when width isn't EXACTLY (an EXACTLY box takes its width from Yoga on
+    // both sides, never from either engine's own measurement).
+    //
+    // EXPENSIVE for custom-styled text (docs/agent/performance.md): the paint's
+    // isSubpixelText/isLinearText push this onto Android's unhinted glyph path.
+    // ~2.5% extra mount cost measured; see docs/agent/perf-experiments.md.
+    val rawDesiredWidth =
+      if (widthMode != YogaMeasureMode.EXACTLY) {
+        ceil(Layout.getDesiredWidth(view.text, view.paint).toDouble()).toInt()
+      } else null
+    val measuredWidth =
+      if (rawDesiredWidth != null) {
+        if (widthMode == YogaMeasureMode.AT_MOST) minOf(rawDesiredWidth, width.toInt())
+        else rawDesiredWidth
+      } else {
+        view.measuredWidth
+      }
+
     return YogaMeasureOutput.make(
-      PixelUtil.toDIPFromPixel(view.measuredWidth.toFloat()),
+      PixelUtil.toDIPFromPixel(measuredWidth.toFloat()),
       PixelUtil.toDIPFromPixel(view.measuredHeight.toFloat())
     )
   }

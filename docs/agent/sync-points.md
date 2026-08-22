@@ -21,13 +21,13 @@ Features screen (`example/src/screens/FeaturesScreen.tsx`).
 Anything the text's width or height depends on: text, font, spacing, line
 count. All five, or the box and the text disagree:
 
-| Site                                                                             | Miss it and…                                                                       |
-| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `cpp/PlainTextMeasurementHelpers.cpp` → `measurementInputsEqual`                 | the size goes stale after an update                                                |
-| `ios/PlainTextShadowNode.mm` → `measureContent`                                  | iOS measures without it, must mirror `RNPlainText.mm`'s `applyContentFromProps`    |
-| `android/.../PlainTextMeasurementsManager.cpp`                                   | the prop never reaches the Android measure pass                                    |
-| `PlainTextViewManager.kt` → `measure()`                                          | same from the other side, and it must apply props exactly as the mounted view does |
-| `PlainTextView.kt` → setter, plus `flushPendingUpdates()` if its work is batched | the prop is recorded but never applied                                             |
+| Site                                                                             | Miss it and…                                                                                                            |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `cpp/PlainTextMeasurementHelpers.cpp` → `measurementInputsEqual`                 | the size goes stale after an update                                                                                     |
+| `ios/PlainTextShadowNode.mm` → `measureContent`                                  | iOS measures without it, must mirror `RNPlainText.mm`'s `applyContentFromProps`                                         |
+| `android/.../PlainTextMeasurementsManager.cpp`                                   | the prop never reaches the Android measure pass                                                                         |
+| `PlainTextViewManager.kt` → `measure()`                                          | same from the other side, and it must apply props exactly as the mounted view does                                      |
+| `PlainTextView.kt` → setter, plus `flushPendingUpdates()` if its work is batched | the prop is recorded but never applied                                                                                  |
 
 The two iOS sites are the ones that have to agree _attribute by attribute_, with
 one exception: the `UIFont` itself is not mirrored. `fontFamily`, `fontSize`,
@@ -83,7 +83,7 @@ three-way default contract above.
 
 ## `lineHeightClippingIos`: global config with a per-instance override
 
-Unlike `hasLetterSpacing`/`experiment`, this one _is_ one of `PlainText`'s
+Unlike `hasLetterSpacing`, this one _is_ one of `PlainText`'s
 public props, just named differently at each layer. `PlainText.native.tsx`
 exposes it as `unstable_lineHeightClippingIos`, the `unstable_` marking that
 its shape/default may change without a major version bump, matching
