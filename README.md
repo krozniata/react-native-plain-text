@@ -88,9 +88,14 @@ Via `style={{ ... }}`:
 - `letterSpacing`
 - `textAlign`
 - `textDecorationLine`: `'none' | 'underline' | 'line-through' | 'underline line-through'`
-- `textDecorationColor` / `textDecorationStyle`: iOS only, matching RN
-  `<Text>`. `textDecorationStyle` is `'solid' | 'double' | 'dotted' | 'dashed' |
-'wavy'`; `'wavy'` falls back to a single line (no UIKit equivalent).
+- `textDecorationColor`: iOS only, matching RN `<Text>`.
+- `textDecorationStyle`: iOS only, matching RN `<Text>`'s own value set
+  (`'solid' | 'double' | 'dotted' | 'dashed'`, no `'wavy'`: RN doesn't have it
+  either). PlainText draws via `UILabel.attributedText` rather than the
+  `NSLayoutManager` RN `<Text>` uses, so this one doesn't fully match RN's
+  rendering: `'double'` isn't supported and falls back to a single line (no
+  `UILabel` code path draws a second line), and `'dotted'`/`'dashed'` render as
+  a pattern but with a different phase than RN's.
 - `textShadowColor` / `textShadowOffset` / `textShadowRadius`: like RN `<Text>`,
   iOS only draws a shadow when `textShadowOffset` itself is set, regardless of
   the other two; Android draws one whenever any of the three would produce a

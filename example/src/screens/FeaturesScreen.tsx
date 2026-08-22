@@ -374,16 +374,12 @@ export default function FeaturesScreen({ navigation }: Props) {
           <TextItem
             key={textDecorationStyle}
             showText={showText}
-            // Cast: RN 0.83's TextStyle type omits 'wavy', though the runtime
-            // (and this library) support it. Safe to drop once RN's types catch up.
-            style={
-              {
-                fontSize: 18,
-                textDecorationLine: 'underline',
-                textDecorationStyle,
-                textDecorationColor: '#e5484d',
-              } as TextStyle
-            }
+            style={{
+              fontSize: 18,
+              textDecorationLine: 'underline',
+              textDecorationStyle,
+              textDecorationColor: '#e5484d',
+            }}
           >{`underline "${textDecorationStyle}" in red`}</TextItem>
         ))}
         <TextItem
@@ -881,7 +877,7 @@ const TEXT_DECORATION_LINES = [
   'underline line-through',
 ] as const;
 
-const TEXT_DECORATION_STYLES = ['solid', 'double', 'dotted', 'dashed', 'wavy'] as const;
+const TEXT_DECORATION_STYLES = ['solid', 'double', 'dotted', 'dashed'] as const;
 
 // "offset only" shows iOS drawing with no radius set, since its gate is
 // textShadowOffset alone. "radius only" is the asymmetric case: no shadow on

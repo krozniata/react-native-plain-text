@@ -59,11 +59,9 @@ export interface NativeProps extends ViewProps {
   // colors the underline/strikethrough independently of the text.
   textDecorationColor?: ColorValue;
   // These values are all single hyphen-free words, so unlike textDecorationLine
-  // they map cleanly onto a codegen enum. Default 'solid' matches RN <Text>.
-  textDecorationStyle?: CodegenTypes.WithDefault<
-    'solid' | 'double' | 'dotted' | 'dashed' | 'wavy',
-    'solid'
-  >;
+  // they map cleanly onto a codegen enum. Matches RN <Text>'s own value set
+  // (TextDecorationStyle in primitives.h) exactly, default 'solid' included.
+  textDecorationStyle?: CodegenTypes.WithDefault<'solid' | 'double' | 'dotted' | 'dashed', 'solid'>;
   // Undefined falls back to RN <Text>'s native per-platform default (a
   // translucent black), matching NSShadow/DEFAULT_TEXT_SHADOW_COLOR.
   //

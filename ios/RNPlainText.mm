@@ -46,23 +46,23 @@ static BOOL RNPlainTextHasLineThrough(const std::string &textDecorationLine)
 }
 
 // Maps textDecorationStyle onto an NSUnderlineStyle (shared by the underline
-// and strikethrough attributes). Mirrors RN <Text>'s iOS mapping
-// (RCTNSUnderlineStyleFromTextDecorationStyle): 'double' is native; 'dotted'/
-// 'dashed' use UIKit's pattern bits as an approximation. 'wavy' has no UIKit
-// equivalent without a custom drawing pass, so it falls back to a single line.
+// and strikethrough attributes). PlainText draws via UILabel.attributedText
+// rather than the NSLayoutManager RN <Text> uses, and UILabel's own renderer
+// has no code path to draw a second line: passing NSUnderlineStyleDouble (RN
+// <Text>'s own iOS mapping for 'double') does render, just as a single line
+// indistinguishable from 'solid', so 'double' maps to NSUnderlineStyleSingle
+// directly instead.
 static NSUnderlineStyle RNPlainTextUnderlineStyleFromProp(RNPlainTextTextDecorationStyle textDecorationStyle)
 {
     switch (textDecorationStyle) {
         case RNPlainTextTextDecorationStyle::Solid:
-            return NSUnderlineStyleSingle;
         case RNPlainTextTextDecorationStyle::Double:
-            return NSUnderlineStyleDouble;
+            return NSUnderlineStyleSingle;
+        // Approximations: dash phase differs from RN <Text>'s NSLayoutManager-drawn version.
         case RNPlainTextTextDecorationStyle::Dotted:
             return NSUnderlineStyleSingle | NSUnderlinePatternDot;
         case RNPlainTextTextDecorationStyle::Dashed:
             return NSUnderlineStyleSingle | NSUnderlinePatternDash;
-        case RNPlainTextTextDecorationStyle::Wavy:
-            return NSUnderlineStyleSingle;
     }
 }
 

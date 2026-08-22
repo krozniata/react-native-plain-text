@@ -800,6 +800,31 @@ const ATTRIBUTES: AttrDef[] = [
     ],
   },
   {
+    // Only draws once textDecorationLine includes 'underline' or
+    // 'line-through', same as textShadowColor below needs textShadowOffset.
+    // iOS only: the Android manager implements the generated setter as a
+    // no-op, so this row prices the iOS attributed-string write alone.
+    key: 'textDecorationColor',
+    section: 'Text',
+    fp: 'tdc',
+    target: 'text',
+    options: [{ label: '(none)' }, { label: 'indigo', value: COLOR.indigo }],
+  },
+  {
+    // iOS only, same reason as textDecorationColor above.
+    key: 'textDecorationStyle',
+    section: 'Text',
+    fp: 'tds',
+    target: 'text',
+    options: [
+      { label: '(none)' },
+      { label: 'solid', value: 'solid' },
+      { label: 'double', value: 'double' },
+      { label: 'dotted', value: 'dotted' },
+      { label: 'dashed', value: 'dashed' },
+    ],
+  },
+  {
     // Only draws once textShadowOffset is also set (or, on Android alone,
     // textShadowRadius), same as the border rows below need borderWidth. Left
     // separate rather than folded into one combined row so each half of the
