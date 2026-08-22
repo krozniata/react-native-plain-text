@@ -53,6 +53,17 @@ export interface NativeProps extends ViewProps {
   //
   // Cost: medium. Forces iOS's attributed-string path and two Android paint flags.
   textDecorationLine?: string;
+  // iOS-only, matching RN <Text> (these two live in TextStyleIOS). Android has
+  // no cheap way to color/style the line on a plain TextView, so the Android
+  // manager implements the generated setters as no-ops. textDecorationColor
+  // colors the underline/strikethrough independently of the text.
+  textDecorationColor?: ColorValue;
+  // These values are all single hyphen-free words, so unlike textDecorationLine
+  // they map cleanly onto a codegen enum. Default 'solid' matches RN <Text>.
+  textDecorationStyle?: CodegenTypes.WithDefault<
+    'solid' | 'double' | 'dotted' | 'dashed' | 'wavy',
+    'solid'
+  >;
   // Undefined falls back to RN <Text>'s native per-platform default (a
   // translucent black), matching NSShadow/DEFAULT_TEXT_SHADOW_COLOR.
   //
@@ -77,7 +88,8 @@ export interface NativeProps extends ViewProps {
     'none' | 'uppercase' | 'lowercase' | 'capitalize',
     'none'
   >;
-  // 0 means unlimited. Caps rendered lines and the shadow node's measured intrinsic height.
+  // 0 means unlimited (matches RN <Text>). Caps rendered lines and the
+  // intrinsic height computed by the shadow node's measure pass.
   numberOfLines?: CodegenTypes.WithDefault<CodegenTypes.Int32, 0>;
   ellipsizeMode?: CodegenTypes.WithDefault<'head' | 'middle' | 'tail' | 'clip', 'tail'>;
   // OS accessibility text-size scaling (Dynamic Type / font scale).

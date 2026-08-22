@@ -80,6 +80,8 @@ export function PlainText({
     textAlignVertical,
     verticalAlign,
     textDecorationLine,
+    textDecorationColor,
+    textDecorationStyle,
     textTransform,
     lineHeight,
     letterSpacing,
@@ -103,6 +105,8 @@ export function PlainText({
       textAlign={textAlign}
       textAlignVertical={resolveTextAlignVertical(textAlignVertical, verticalAlign)}
       textDecorationLine={textDecorationLine}
+      textDecorationColor={textDecorationColor}
+      textDecorationStyle={textDecorationStyle}
       textTransform={textTransform}
       textShadowColor={textShadowColor}
       textShadowOffsetWidth={textShadowOffset?.width}
