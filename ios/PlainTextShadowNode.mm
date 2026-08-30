@@ -63,7 +63,7 @@ Size PlainTextShadowNode::measureContent(
   // so that width is exactly what's needed to avoid wrapping. Deliberately
   // uses the same API that does the wrapping, since cheaper stand-ins have to
   // predict CoreText's rules and measured slower in practice (see
-  // docs/agent/performance.md).
+  // docs/contributing/performance.md).
   CGRect unconstrained = [text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                             options:NSStringDrawingUsesLineFragmentOrigin
                                          attributes:attributes

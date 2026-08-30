@@ -9,7 +9,7 @@
 // SYNC: mirrors android/.../RNPlainTextSpec/PlainTextShadowNode.h, same traits and
 // overrides, so a change here usually belongs there too. Only the invalidation logic
 // is actually shared, via the include below. See
-// docs/agent/sync-points.md#both-platforms-shadow-nodes.
+// docs/contributing/sync-points.md#both-platforms-shadow-nodes.
 #include "PlainTextMeasurementHelpers.h"
 
 namespace facebook::react {

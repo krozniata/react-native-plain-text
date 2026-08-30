@@ -61,7 +61,7 @@ static NSLineBreakMode RNPlainTextLineBreakModeFromProp(RNPlainTextEllipsizeMode
 
 // textAlignVertical is Android-only in RN core, so RN's <Text> on iOS always
 // top-aligns. That is a gap in RN rather than a difference to preserve (see
-// docs/agent/workflow.md#when-rn-itself-has-the-platform-gap), and the override
+// docs/contributing/workflow.md#when-rn-itself-has-the-platform-gap), and the override
 // UILabel already needs (it would otherwise center an overtall frame) resolves
 // all three values at no extra cost.
 @interface RNPlainTextLabel : UILabel

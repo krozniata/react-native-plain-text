@@ -60,13 +60,21 @@ There are almost none. `yarn test` runs Jest over `src/`, where the only case is
 verified. That is a deliberate consequence of where the logic lives: almost all
 of it is `UILabel`/`TextView` behavior, which no unit test reaches.
 
-The exception is string parsing, and it does have a test target.
+The exception is the pure C++ helpers extracted out of the `.mm` files, which
+have a test target.
 
 ### `yarn test:cpp`
 
-A table of inputs against expected results for
-`parsePlainTextFontVariations`, in `tests/cpp/PlainTextFontVariations.test.cpp`.
-That kind of table would have caught a real bug that review did not: the parser
+`scripts/test-cpp.sh` runs one suite per extracted helper, each a table of
+inputs against expected results:
+
+| Suite             | Unit under test                              | Source                                                               |
+| ----------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+| `font-variations` | `parseFontVariations`                        | `ios/PlainTextFontVariations.cpp` (+ `ios/PlainTextStringUtils.cpp`) |
+| `font-cache-key`  | `faceCacheKey` / `fontCacheKey`              | `ios/PlainTextFontCacheKey.cpp`                                      |
+| `font-sizing`     | `scaledFontSize` / `clampFontSizeMultiplier` | `ios/PlainTextFontSizing.cpp`                                        |
+
+That kind of table caught a real bug that review did not: the variations parser
 rejected the trailing comma Android accepts, so the same prop value varied on
 one platform and not the other.
 
@@ -83,12 +91,13 @@ one platform and not the other.
   the ones under `cpp/`, so a test file there would compile into the shipped pod
   and into the Android build.
 
-What makes this cheap is that the unit under test includes nothing but the
+What makes this cheap is that each unit under test includes nothing but the
 standard library. Keeping it that way is the price of admission: pure logic
 extracted into its own dependency-free file gets a test, logic left inline in a
-`.mm` next to `UIFont` does not. `parsePlainTextFontVariations` sits in `ios/`
-rather than `cpp/` for the separate reason that Android parses the same prop
-with `FontVariationAxis.fromFontVariationSettings` and has no use for it.
+`.mm` next to `UIFont` does not. These helpers sit in `ios/` rather than `cpp/`
+because Android has no use for them: it parses `fontVariationSettings` with
+`FontVariationAxis.fromFontVariationSettings` and does its own font-size math in
+Kotlin, so there is nothing cross-platform to share.
 
 For hand-written parsing that is _not_ extracted, review is still the only line
 of defense.

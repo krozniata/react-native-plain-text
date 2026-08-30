@@ -13,9 +13,9 @@ Time to mount covers input dispatch, React render, Fabric commit, Yoga layout
 with text measurement, and native view creation, but not rasterization. It is
 the `event` entry duration reported by `PerformanceObserver`, the RN metric
 closest to INP on the web. Self-measured from the example app: see
-[measuring.md](https://github.com/mdjastrzebski/react-native-plain-text/blob/main/docs/agent/measuring.md)
+[measuring.md](https://github.com/mdjastrzebski/react-native-plain-text/blob/main/docs/contributing/measuring.md)
 for the method and
-[performance.md](https://github.com/mdjastrzebski/react-native-plain-text/blob/main/docs/agent/performance.md)
+[performance.md](https://github.com/mdjastrzebski/react-native-plain-text/blob/main/docs/contributing/performance.md)
 for per-run data.
 
 ## Detailed results

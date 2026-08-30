@@ -41,7 +41,7 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
   // never does, so every mount lands here. Calling it would hand this a previously-used
   // PlainTextView carrying stale text/font/color, which is what RN's own
   // ReactTextViewManager answers with recycleView(). See
-  // docs/agent/sync-points.md#recycled-view-state, the same failure as the iOS fix in
+  // docs/contributing/sync-points.md#recycled-view-state, the same failure as the iOS fix in
   // RNPlainText.mm, not ported here.
   public override fun createViewInstance(context: ThemedReactContext): PlainTextView {
     return PlainTextView(context)
@@ -195,7 +195,7 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     view?.includeFontPadding = includeFontPadding
   }
 
-  // Unread: no experiment is currently using it. See docs/agent/perf-experiments.md.
+  // Unread: no experiment is currently using it. See docs/contributing/perf-experiments.md.
   @ReactProp(name = "experiment", defaultBoolean = false)
   override fun setExperiment(view: PlainTextView?, experiment: Boolean) {
   }
@@ -289,9 +289,9 @@ class PlainTextViewManager : SimpleViewManager<PlainTextView>(),
     // visible when width isn't EXACTLY (an EXACTLY box takes its width from Yoga on
     // both sides, never from either engine's own measurement).
     //
-    // EXPENSIVE for custom-styled text (docs/agent/performance.md): the paint's
+    // EXPENSIVE for custom-styled text (docs/contributing/performance.md): the paint's
     // isSubpixelText/isLinearText push this onto Android's unhinted glyph path.
-    // ~2.5% extra mount cost measured; see docs/agent/perf-experiments.md.
+    // ~2.5% extra mount cost measured; see docs/contributing/perf-experiments.md.
     val rawDesiredWidth =
       if (widthMode != YogaMeasureMode.EXACTLY) {
         ceil(Layout.getDesiredWidth(view.text, view.paint).toDouble()).toInt()

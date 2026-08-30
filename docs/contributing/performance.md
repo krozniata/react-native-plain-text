@@ -21,9 +21,9 @@ Two rules, both binding on every new prop or style.
   allocate, resolve a font, build a string, force a second pass, or reach a
   platform setter that does any of those. A comparison and an early return is
   the whole budget. This is what keeps the component cheap for the common case,
-  where a node sets three or four values out of the seventeen on offer. Every
-  prop today holds to it, so a new one that can't is the exception and needs an
-  argument, not a footnote.
+  where a node sets three or four values out of the two dozen or so on offer.
+  Every prop today holds to it, so a new one that can't is the exception and
+  needs an argument, not a footnote.
 - **Estimate the cost of a prop that is set, and record it.** Rate it light,
   medium or heavy by the table below, and if it is medium or heavy say so in a
   `Cost:` line beside it in `src/PlainTextViewNativeComponent.ts` and add it to

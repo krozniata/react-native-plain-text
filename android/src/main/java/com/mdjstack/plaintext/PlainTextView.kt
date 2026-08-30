@@ -42,7 +42,7 @@ class PlainTextView : AppCompatTextView {
   //
   // SYNC: toEffectivePixel/calculateLetterSpacing below are pure top-level functions
   // because Kotlin's init-order check doesn't see through method calls. See
-  // docs/agent/sync-points.md.
+  // docs/contributing/sync-points.md.
 
   private var fontSizeSp: Float = 14f
   // Mirrors RN's <Text> (TextAttributes): sp sizes track the OS text-size setting
@@ -99,7 +99,7 @@ class PlainTextView : AppCompatTextView {
   // never ran.
   //
   // SYNC: only assigned from applyTypeface and the restore in applyVariationSettings.
-  // See docs/agent/sync-points.md.
+  // See docs/contributing/sync-points.md.
   //
   // Known quirk: the OS "Bold text" setting reapplies the typeface via
   // onConfigurationChanged (API 31+) without invalidating this field, silently
@@ -183,7 +183,7 @@ class PlainTextView : AppCompatTextView {
     // SYNC: must run after applyTypeface, since axes are baked into a derived Typeface, so
     // a new base typeface arrives with none. Reordering silently drops the axes
     // whenever a font prop changes in the same transaction. See
-    // docs/agent/sync-points.md#deferred-prop-application.
+    // docs/contributing/sync-points.md#deferred-prop-application.
     applyVariationSettings()
     if (dirtyText) {
       dirtyText = false
@@ -241,7 +241,7 @@ class PlainTextView : AppCompatTextView {
 
   // SYNC: everything derived from the OS text-size setting must be reachable from
   // here, iOS's traitCollectionDidChange must cover the same set. See
-  // docs/agent/sync-points.md.
+  // docs/contributing/sync-points.md.
   private fun markScaledSizesDirty() {
     dirtyFontSize = true
     dirtyText = true // lineHeight span is scaled too.
@@ -363,7 +363,7 @@ class PlainTextView : AppCompatTextView {
   // Mirrors <Text> (TextAttributeProps#setFontVariant): an OpenType feature-settings
   // string on the paint, not the typeface. Deliberately unguarded: Paint early-outs
   // on an equal string, and the invalidation is redundant with setText anyway. See
-  // docs/agent/performance.md before adding a guard.
+  // docs/contributing/performance.md before adding a guard.
   fun setFontVariant(fontVariant: ReadableArray?) {
     fontFeatureSettings = ReactTypefaceUtils.parseFontVariant(fontVariant)
   }
@@ -396,7 +396,7 @@ class PlainTextView : AppCompatTextView {
     // Cross-view cache: appliedVariationSettings and applyTypeface's identity check
     // only catch one view redoing its own work. N mounted views at the same font +
     // axes each start uncached, so each pays for its own native derivation. See
-    // docs/agent/performance.md.
+    // docs/contributing/performance.md.
     val base = appliedBaseTypeface
     if (settings != null && base != null) {
       val cached = variationTypefaceCache.get(VariationCacheKey(base, settings))
@@ -459,14 +459,14 @@ class PlainTextView : AppCompatTextView {
     // three set at all attaches it, regardless of value. Its apply() turns both
     // flags on; a plain paint never does. Closes a sub-px width/glyph-position
     // drift against RN's <Text>, only visible once one of these is customized.
-    // See docs/agent/perf-experiments.md.
+    // See docs/contributing/perf-experiments.md.
     val hasCustomStyleSpan =
       fontStyle != ReactConstants.UNSET || fontWeight != ReactConstants.UNSET || fontFamily != null
     paint.isSubpixelText = hasCustomStyleSpan
     paint.isLinearText = hasCustomStyleSpan
     if (hasCustomStyleSpan != appliedHasCustomStyleSpan) {
       appliedHasCustomStyleSpan = hasCustomStyleSpan
-      // EXPENSIVE: forces a re-layout (docs/agent/performance.md). Paint flags
+      // EXPENSIVE: forces a re-layout (docs/contributing/performance.md). Paint flags
       // don't self-invalidate; usually setTypeface below does it for us, but not
       // when the resolved typeface doesn't change (e.g. fontStyle="normal").
       requestLayout()
@@ -583,7 +583,7 @@ private const val DEFAULT_TEXT_SHADOW_COLOR = 0x55000000
 
 // Mirrors <Text> (TextAttributes#getEffective*): sp -> px through the OS setting,
 // clamped by maxFontSizeMultiplier; raw DIP when scaling is off. Pure and top-level
-// since init seeds textSize through it. See docs/agent/sync-points.md.
+// since init seeds textSize through it. See docs/contributing/sync-points.md.
 private fun toEffectivePixel(
   sp: Float,
   allowFontScaling: Boolean,
@@ -600,7 +600,7 @@ private fun toEffectivePixel(
 // since that one is internal to RN's own module). Capitalize already matches CSS
 // here; see ios/PlainTextTextTransform.h for why iOS needs its own implementation.
 private fun applyTextTransform(text: String, textTransform: String?): String {
-  // EXPENSIVE: allocates a transformed copy per call (docs/agent/performance.md).
+  // EXPENSIVE: allocates a transformed copy per call (docs/contributing/performance.md).
   return when (textTransform) {
     "uppercase" -> text.uppercase(Locale.getDefault())
     "lowercase" -> text.lowercase(Locale.getDefault())
@@ -629,7 +629,7 @@ private data class VariationCacheKey(val baseTypeface: Typeface, val settings: S
 // Shared across every PlainTextView, including the measuring view. Bounded since
 // settings is a continuous value an animating screen could grow without limit, same
 // reasoning as the iOS font cache's countLimit
-// (docs/agent/performance.md#share-and-cache-ios-font-resolution).
+// (docs/contributing/performance.md#share-and-cache-ios-font-resolution).
 //
 // LruCache synchronizes internally, needed since measure() runs on the layout thread
 // and mount on the UI thread, and both reach this.

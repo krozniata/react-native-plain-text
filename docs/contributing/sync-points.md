@@ -202,6 +202,17 @@ back to recover the base. Before the identity guard an assignment from anywhere 
 self-heal on the next flush, because `applyTypeface` re-set the typeface every time.
 It now persists.
 
+Layered on top of that per-view state is `variationTypefaceCache`, a process-wide
+`LruCache` keyed on `(base typeface, settings string)`, shared by every
+`PlainTextView` including the measuring one. A hit assigns the derived `Typeface`
+directly and skips the clear-then-derive dance entirely (see
+[performance.md](performance.md#cache-the-derived-fontvariationsettings-typeface-across-views-plaintextviewkt)).
+It changes the cost, not the contract: on a miss the three-piece state above still
+governs correctness, and the ordering rule (`applyVariationSettings` after
+`applyTypeface`) is unchanged. The one visible divergence is that a cache hit goes
+through `TextView.setTypeface`, which updates `getTypeface()`, so a cache-hit view
+keeps its axes across an OS **Bold text** toggle where a cache-missed one drops them.
+
 One assignment is out of our hands and is documented rather than prevented.
 `TextView.onConfigurationChanged` calls `setTypeface(getTypeface())` when
 `Configuration.fontWeightAdjustment` changes (the OS **Bold text** setting, API 31+)

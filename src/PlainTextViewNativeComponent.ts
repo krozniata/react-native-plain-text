@@ -6,9 +6,9 @@ import {
 } from 'react-native';
 
 // SYNC: this spec is the source of truth for props. Changing one touches several
-// other files that nothing checks automatically (see docs/agent/sync-points.md).
+// other files that nothing checks automatically (see docs/contributing/sync-points.md).
 //
-// `Cost:` lines rate a prop that is *set*, per docs/agent/performance.md#prop-cost-policy.
+// `Cost:` lines rate a prop that is *set*, per docs/contributing/performance.md#prop-cost-policy.
 // Unmarked props are light, and a set prop left at default still costs a check.
 export interface NativeProps extends ViewProps {
   text?: string;
@@ -17,9 +17,14 @@ export interface NativeProps extends ViewProps {
   // Cost: medium. Font lookup, cached per family/size after the first resolution.
   fontFamily?: string;
   // Free string, not a literal union: codegen enums can't start with a digit ('100'..'900').
+  //
+  // Cost: medium. Android only: setting it, even to the font's default value, pushes
+  // measurement onto the unhinted glyph path (matches RN <Text>), ~2.5% extra mount cost.
   fontWeight?: string;
   // Free string, not WithDefault<enum>: iOS needs to tell "normal" apart from unset,
   // which codegen's enum collapsing can't express.
+  //
+  // Cost: medium. Same Android unhinted-glyph-path cost as fontWeight above.
   fontStyle?: string;
   // OpenType feature toggles (RN <Text>'s fontVariant); string array because codegen
   // turns enum arrays into a bitmask enum. Empty means no features set.
@@ -46,7 +51,7 @@ export interface NativeProps extends ViewProps {
   hasLetterSpacing?: CodegenTypes.WithDefault<boolean, false>;
   textAlign?: CodegenTypes.WithDefault<'auto' | 'left' | 'right' | 'center' | 'justify', 'auto'>;
   // Android-only in RN <Text>, but PlainText closes that gap on iOS too (see
-  // docs/agent/workflow.md#when-rn-itself-has-the-platform-gap). JS maps the
+  // docs/contributing/workflow.md#when-rn-itself-has-the-platform-gap). JS maps the
   // cross-platform verticalAlign style onto this ('middle' -> 'center').
   textAlignVertical?: CodegenTypes.WithDefault<'auto' | 'top' | 'bottom' | 'center', 'auto'>;
   // Free string: 'underline line-through' has a space, which codegen enums can't represent.
@@ -89,7 +94,7 @@ export interface NativeProps extends ViewProps {
   // whatever is being tried. What it does is platform- and experiment-
   // specific. A platform with no experiment wired up ignores it.
   //
-  // Currently unread: no experiment is live. See docs/agent/perf-experiments.md.
+  // Currently unread: no experiment is live. See docs/contributing/perf-experiments.md.
   experiment?: CodegenTypes.WithDefault<boolean, false>;
   // Internal, not part of PlainText's public props. Driven by
   // unstable_configureTextCompat (src/compat.ts), forwarded on every render

@@ -22,7 +22,7 @@ static NSString *capitalizedString(NSString *text)
 
 NSString *plainTextApplyTextTransform(NSString *text, RNPlainTextTextTransform textTransform)
 {
-    // EXPENSIVE: allocates a transformed copy per call (docs/agent/performance.md).
+    // EXPENSIVE: allocates a transformed copy per call (docs/contributing/performance.md).
     switch (textTransform) {
         case RNPlainTextTextTransform::Uppercase:
             return text.uppercaseString;

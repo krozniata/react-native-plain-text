@@ -224,7 +224,7 @@ static UIFont *resolvedFont(const RNPlainTextProps &props, const std::string &fa
   // Added last, as in RCTFont.mm, on top of whatever family/weight/italic resolution produced.
   NSArray<NSDictionary *> *features = fontFeatureSettings(props.fontVariant);
   if (features != nil) {
-    // EXPENSIVE: a descriptor round trip (fontVariant's cache-miss cost, docs/agent/performance.md).
+    // EXPENSIVE: a descriptor round trip (fontVariant's cache-miss cost, docs/contributing/performance.md).
     UIFontDescriptor *featureDescriptor = [font.fontDescriptor
         fontDescriptorByAddingAttributes:@{UIFontDescriptorFeatureSettingsAttribute : features}];
     font = [UIFont fontWithDescriptor:featureDescriptor size:fontSize] ?: font;
@@ -237,7 +237,7 @@ static UIFont *resolvedFont(const RNPlainTextProps &props, const std::string &fa
   if (variations != nil) {
     CTFontDescriptorRef variationDescriptor = CTFontDescriptorCreateWithAttributes(
         (__bridge CFDictionaryRef) @{(__bridge id)kCTFontVariationAttribute : variations});
-    // EXPENSIVE: a CTFont copy (fontVariationSettings' cache-miss cost, docs/agent/performance.md).
+    // EXPENSIVE: a CTFont copy (fontVariationSettings' cache-miss cost, docs/contributing/performance.md).
     UIFont *variedFont = (__bridge_transfer UIFont *)CTFontCreateCopyWithAttributes(
         (__bridge CTFontRef)font, font.pointSize, NULL, variationDescriptor);
     CFRelease(variationDescriptor);

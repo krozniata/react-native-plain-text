@@ -93,7 +93,7 @@ type RunStats = {
 };
 
 // Measured with RN's own Web Performance APIs, stable since 0.83, rather than
-// hand-rolled timing. See docs/agent/measuring.md.
+// hand-rolled timing. See docs/contributing/measuring.md.
 //
 // `interaction` is the headline: for an event whose handler causes rendering
 // updates, EventPerformanceLogger holds the entry until the shadow tree mounts
@@ -1047,7 +1047,7 @@ const ATTRIBUTES: AttrDef[] = [
     // one generic on/off switch for whatever the perf suite is currently A/B
     // testing. `(none)`/`false` is baseline, and `true` is the experiment.
     // Meaning is platform- and experiment-specific, and currently unread on
-    // both. See docs/agent/perf-experiments.md.
+    // both. See docs/contributing/perf-experiments.md.
     key: 'experiment',
     section: 'Params',
     fp: 'exp',

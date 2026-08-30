@@ -452,7 +452,7 @@ export default function FeaturesScreen({ navigation }: Props) {
           Where that adds up to a visible difference is no-common-ligatures: the
           gray box drops the ffl/ffi ligatures and the overlay keeps them, now on
           both platforms, since the serif and Roboto both carry them. Both
-          reasons are spelled out in docs/agent/native-gotchas.md. */}
+          reasons are spelled out in docs/contributing/native-gotchas.md. */}
       <Section title="Font Variant" footer={FONT_VARIANT_FOOTER}>
         {/* Baseline to compare every row below against. */}
         <TextItem label="default" showText={showText} style={fontVariantRow}>
@@ -509,7 +509,7 @@ export default function FeaturesScreen({ navigation }: Props) {
             the font's default instance on every row while the grey box moves.
             Two PRs tried to add it to core and both went stale unmerged
             (react/react-native#44685 for iOS, #44667 for Android). See
-            docs/agent/native-gotchas.md.
+            docs/contributing/native-gotchas.md.
           - Every row needs a font whose file carries an fvar table, which no
             system font usably does: SF keeps its axes private, and Roboto is
             only variable from Android 12. Hence the bundled Open Sans (see
@@ -532,7 +532,7 @@ export default function FeaturesScreen({ navigation }: Props) {
         ))}
       </Section>
       {/* Android-only in RN <Text>, closed on iOS here (see
-          docs/agent/workflow.md#when-rn-itself-has-the-platform-gap). Each box
+          docs/contributing/workflow.md#when-rn-itself-has-the-platform-gap). Each box
           is taller than its text so the position is visible. Rows drive this
           through `verticalAlign`, which RN aliases onto `textAlignVertical` in
           JS, so it covers both props. */}
@@ -916,7 +916,7 @@ const FONT_VARIANT_FEATURE_FAMILY = Platform.select({ ios: 'Baskerville', defaul
 // show any of this on Android. RN only attaches the span that carries
 // fontFeatureSettings when fontStyle, fontWeight or fontFamily is set too, so
 // fontVariant on its own renders unchanged there (see
-// docs/agent/native-gotchas.md). Applied to both sides rather than to the overlay
+// docs/contributing/native-gotchas.md). Applied to both sides rather than to the overlay
 // alone, so the comparison stays apples-to-apples: it is a no-op for PlainText,
 // which already resolves fontStyle 'normal' the same as unset. It does nudge RN's
 // own paint (the span also sets isSubpixelText/isLinearText), which is
@@ -963,7 +963,7 @@ const FONT_VARIANTS: { label: string; fontVariant?: TextStyle['fontVariant'] }[]
 ];
 
 // Per-platform: the RN <Text> gaps and the fonts differ. Detail in
-// docs/agent/native-gotchas.md.
+// docs/contributing/native-gotchas.md.
 const FONT_VARIANT_FOOTER = Platform.select({
   ios: 'RN <Text> ignores the ligature values. (no-common-ligatures row)',
   default:

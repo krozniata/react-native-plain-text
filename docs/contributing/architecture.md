@@ -10,8 +10,9 @@ see [sync-points.md](sync-points.md)).
    interface is the source of truth. Codegen turns it into the C++/Kotlin
    interfaces the native code implements.
 2. **JS wrapper**: `src/PlainText.native.tsx` (native) and `src/PlainText.tsx`
-   (web fallback, renders RN `<Text>`). `src/index.tsx` re-exports from
-   `./PlainText`.
+   (web fallback, renders RN `<Text>`). `src/index.tsx` re-exports `PlainText`
+   and its types from `./PlainText`, plus `unstable_configureTextCompat` and
+   `TextCompatConfig` from `./compat`.
 3. **iOS**: `ios/RNPlainText.mm` (+ `.h`): an `RCTViewComponentView` subclass
    hosting a `UILabel`, applying props in `updateProps:` by diffing
    `oldViewProps`/`newViewProps`.
